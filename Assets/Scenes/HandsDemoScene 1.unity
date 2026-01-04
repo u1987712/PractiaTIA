@@ -3677,9 +3677,9 @@ Terrain:
   m_TerrainData: {fileID: 15600000, guid: 058e98cdd248c8a45b4ecc71e85d4ca5, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
-  m_TreeCrossFadeLength: 5
+  m_TreeCrossFadeLength: 168
   m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
+  m_DetailObjectDistance: 110
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
   m_SplatMapDistance: 1000
@@ -20165,6 +20165,14 @@ PrefabInstance:
       propertyPath: head
       value: 
       objectReference: {fileID: 1948693207}
+    - target: {fileID: 5186609511050964327, guid: a20706d7e6530b945bc7f622d61a3c18, type: 3}
+      propertyPath: distance
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5186609511050964327, guid: a20706d7e6530b945bc7f622d61a3c18, type: 3}
+      propertyPath: heightOffset
+      value: -0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 5327233790114479965, guid: a20706d7e6530b945bc7f622d61a3c18, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
