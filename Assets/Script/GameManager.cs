@@ -1,18 +1,29 @@
 using System.Collections.Generic;
+using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
+
+    [SerializeField] private XROrigin xrOrigin;
+
     [Header("UI")]
     public GameObject mainMenu;
     public GameObject bookHUD;
+    public Text TextPassword;
 
     [Header("Spawn")]
-    public List<GameObject> objectsToSpawn; // prefabs a instanciar
+    public GameObject objectsToSpawn; // prefabs a instanciar
     public Terrain terrain; // terrain
     public int spawnMaskLayerIndex = 1; // índice del layer que marca zona de spawn
+    public int numObjSpawn = 4;
+    public int getObjSpawn = 0;
     public float minDistanceBetweenObjects = 2f;
-
+     public Text TextNumObj;
+    
+    [Header("Password")]
+    public string passwordSequence = "";   
 
     [Header("Timer")]
     public Text timerText;
@@ -42,6 +53,8 @@ public class GameManager : MonoBehaviour {
         // Empezar temporizador
         timer = gameDuration;
         gameRunning = true;
+
+        TextNumObj.text = string.Format("{0}/{1}", 0, numObjSpawn + 1);
     }
 
     void Update() {
@@ -56,12 +69,12 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void EndGame()
-    {
+    void EndGame() {
         gameRunning = false;
-        Debug.Log("Juego terminado!");
-        // Por ahora, salimos del juego
-        Application.Quit();
+        Debug.Log("Juego terminado, reiniciamos!");
+        Scene currentScene = SceneManager.GetActiveScene();
+        Debug.Log(currentScene.name);
+        SceneManager.LoadScene(currentScene.name);
     }
 
     void UpdateTimerOnHUD(float t){
@@ -77,25 +90,34 @@ public class GameManager : MonoBehaviour {
         
     }
 
+    public bool CheckPassword(string input) {
+        return input == passwordSequence;
+    }
+
+    public void EndGameSuccess() {
+        gameRunning = false;
+        Debug.Log("CONTRASEÑA CORRECTA");
+        
+        // añadir funcionalizad de aparecer texto en popup de ganadar y boton de reset
+
+     
+    }
+
+
     void SpawnObjectsRandomly() {
-        /* // este es el codigo original que hay que descomentar
-        foreach (var prefab in objectsToSpawn) {
+        passwordSequence = "";
+
+        for (int i = 0; i < numObjSpawn; i++) {
             Vector3 spawnPos = GetValidSpawnPosition();
             if (spawnPos != Vector3.zero) {
-                GameObject obj = Instantiate(prefab, spawnPos, Quaternion.identity);
-                spawnedObjects.Add(obj);
-            }
-        }*/
+                GameObject obj = Instantiate(objectsToSpawn, spawnPos, Quaternion.identity);
+                obj_instance co = obj.GetComponent<obj_instance>();
+                co.number = Random.Range(1, 10);
+                co.passwordIndex = i+1;
+                co.textobj.text = string.Format("{0}-[{1}]",co.number, co.passwordIndex);
 
-        // este codsigo es para instanciar 2000 del mismo para hacer pruebas, ser puede eliminar si ya no hace falta...
-        int spawnCount = 2000; // cuántos objetos quieres en la zona
-        for (int i = 0; i < spawnCount; i++)
-        {
-            Vector3 spawnPos = GetValidSpawnPosition();
-            if (spawnPos != Vector3.zero)
-            {
-                GameObject obj = Instantiate(objectsToSpawn[0], spawnPos, Quaternion.identity);
                 spawnedObjects.Add(obj);
+                passwordSequence += co.number.ToString();
             }
         }
     }
@@ -151,8 +173,15 @@ public class GameManager : MonoBehaviour {
     public void ObjectDroppedCorrectly(GameObject obj, float bonusTime) {
         if (spawnedObjects.Contains(obj)) {
             spawnedObjects.Remove(obj);
-            Destroy(obj); // eliminamos el objeto
+            obj_instance co = obj.GetComponent<obj_instance>();
+            
             timer += bonusTime; // sumamos tiempo al temporizador
+            getObjSpawn++;
+            TextNumObj.text = string.Format("{0}/{1}", getObjSpawn, numObjSpawn + 1);
+            TextPassword.text += string.Format("{0}-[{1}] ", co.number, co.passwordIndex);
+            
+            
+            Destroy(obj); // eliminamos el objeto
             Debug.Log("Objeto depositado correctamente. Tiempo añadido: " + bonusTime);
         }
     }
