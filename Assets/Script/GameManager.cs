@@ -96,6 +96,9 @@ public class GameManager : MonoBehaviour {
 
     public void EndGameSuccess() {
         gameRunning = false;
+        getObjSpawn++;
+        TextNumObj.text = string.Format("{0}/{1}", getObjSpawn, numObjSpawn + 1);
+
         Debug.Log("CONTRASEÑA CORRECTA");
         
         // añadir funcionalizad de aparecer texto en popup de ganadar y boton de reset
