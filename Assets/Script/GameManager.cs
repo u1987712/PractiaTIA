@@ -3,6 +3,8 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+
 
 public class GameManager : MonoBehaviour {
 
@@ -16,11 +18,11 @@ public class GameManager : MonoBehaviour {
     [Header("Spawn")]
     public GameObject objectsToSpawn; // prefabs a instanciar
     public Terrain terrain; // terrain
-    public int spawnMaskLayerIndex = 1; // índice del layer que marca zona de spawn
+    public int spawnMaskLayerIndex = 1; // ï¿½ndice del layer que marca zona de spawn
     public int numObjSpawn = 4;
     public int getObjSpawn = 0;
     public float minDistanceBetweenObjects = 2f;
-     public Text TextNumObj;
+    public Text TextNumObj;
     
     [Header("Password")]
     public string passwordSequence = "";   
@@ -33,15 +35,26 @@ public class GameManager : MonoBehaviour {
 
     private List<GameObject> spawnedObjects = new List<GameObject>();
 
+    [Header("Beacon System")]
+    public float beaconDuration = 5f;
+    public float beaconCooldown = 30f;
+    private bool beaconOnCooldown = false;
+
+    [Header("VR Input")]
+    public InputActionReference showBeaconsAction;
+
+    [Header("Cofre")]
+    public GameObject treasureChest;
+
     void Start()
     {
-        // Inicio: menú activo, HUD apagado
+        // Inicio: menï¿½ activo, HUD apagado
         mainMenu.SetActive(true);
         bookHUD.SetActive(false);
     }
 
     public void StartGame() {
-        // Ocultar menú
+        // Ocultar menï¿½
         mainMenu.SetActive(false);
 
         // Activar libro
@@ -54,7 +67,7 @@ public class GameManager : MonoBehaviour {
         timer = gameDuration;
         gameRunning = true;
 
-        TextNumObj.text = string.Format("{0}/{1}", 0, numObjSpawn + 1);
+        TextNumObj.text = string.Format("{0} de {1}", 0, numObjSpawn + 1);
     }
 
     void Update() {
@@ -69,12 +82,13 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void EndGame() {
+    public void EndGame() {
         gameRunning = false;
         Debug.Log("Juego terminado, reiniciamos!");
         Scene currentScene = SceneManager.GetActiveScene();
         Debug.Log(currentScene.name);
         SceneManager.LoadScene(currentScene.name);
+        
     }
 
     void UpdateTimerOnHUD(float t){
@@ -99,11 +113,20 @@ public class GameManager : MonoBehaviour {
         getObjSpawn++;
         TextNumObj.text = string.Format("{0}/{1}", getObjSpawn, numObjSpawn + 1);
 
-        Debug.Log("CONTRASEÑA CORRECTA");
+        Debug.Log("CONTRASEï¿½A CORRECTA");
         
-        // añadir funcionalizad de aparecer texto en popup de ganadar y boton de reset
-
-     
+        treasureChest.transform.Rotate(-90f, 0f, 0f);
+        
+        Transform hudChild = bookHUD.transform.Find("hud");
+        if (hudChild != null) {
+            hudChild.gameObject.SetActive(false);
+        }
+        
+        Transform hudEndgameChild = bookHUD.transform.Find("hudendgame");
+        if (hudEndgameChild != null) {
+            hudEndgameChild.gameObject.SetActive(true);
+        }
+             
     }
 
 
@@ -133,7 +156,7 @@ public class GameManager : MonoBehaviour {
         do {
             attempts++;
 
-            // Posición aleatoria sobre el terrain
+            // Posiciï¿½n aleatoria sobre el terrain
             float x = Random.Range(terrain.transform.position.x, terrain.transform.position.x + terrain.terrainData.size.x);
             float z = Random.Range(terrain.transform.position.z, terrain.transform.position.z + terrain.terrainData.size.z);
             pos = new Vector3(x, 0, z);
@@ -141,7 +164,7 @@ public class GameManager : MonoBehaviour {
 
             valid = true;
 
-            // Comprobar si la máscara (Layer 1) domina la posición
+            // Comprobar si la mï¿½scara (Layer 1) domina la posiciï¿½n
             float normX = (pos.x - terrain.transform.position.x) / terrain.terrainData.size.x;
             float normZ = (pos.z - terrain.transform.position.z) / terrain.terrainData.size.z;
 
@@ -151,7 +174,7 @@ public class GameManager : MonoBehaviour {
             float[,,] splatmap = terrain.terrainData.GetAlphamaps(mapX, mapZ, 1, 1);
             float textureValue = splatmap[0, 0, spawnMaskLayerIndex];
 
-            if (textureValue < 0.5f) valid = false; // si la máscara no domina --> no spawn
+            if (textureValue < 0.5f) valid = false; // si la mï¿½scara no domina --> no spawn
 
             // Evitar solapamiento con otros objetos
             foreach (var existing in spawnedObjects) {
@@ -163,7 +186,7 @@ public class GameManager : MonoBehaviour {
 
         } while (!valid && attempts < 100);
 
-        if (!valid) return Vector3.zero; // si no encontró posición válida
+        if (!valid) return Vector3.zero; // si no encontrï¿½ posiciï¿½n vï¿½lida
         return pos;
     }
 
@@ -185,8 +208,62 @@ public class GameManager : MonoBehaviour {
             
             
             Destroy(obj); // eliminamos el objeto
-            Debug.Log("Objeto depositado correctamente. Tiempo añadido: " + bonusTime);
+            Debug.Log("Objeto depositado correctamente. Tiempo aï¿½adido: " + bonusTime);
         }
+    }
+
+    private void OnEnable()
+    {
+        if (showBeaconsAction != null)
+        {
+            showBeaconsAction.action.Enable();
+            showBeaconsAction.action.performed += OnShowBeacons;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (showBeaconsAction != null)
+            showBeaconsAction.action.performed -= OnShowBeacons;
+    }
+
+    private void OnShowBeacons(InputAction.CallbackContext ctx)
+    {
+        Debug.Log("BOTÃ“N DE BEACON PULSADO");
+        ActivateBeacons();
+    }
+    public void ActivateBeacons()
+    {
+        if (beaconOnCooldown) return;
+        StartCoroutine(BeaconRoutine());
+    }
+
+    private System.Collections.IEnumerator BeaconRoutine()
+    {
+        beaconOnCooldown = true;
+
+        // Encender torres
+        foreach (GameObject obj in spawnedObjects)
+        {
+            if (obj == null) continue;
+
+            obj_instance inst = obj.GetComponent<obj_instance>();
+            inst.ShowBeacon();
+        }
+        // 5 segundos encendidas
+        yield return new WaitForSeconds(beaconDuration);
+
+        // Apagar torres
+        foreach (GameObject obj in spawnedObjects)
+        {
+            if (obj == null) continue;
+
+            obj_instance inst = obj.GetComponent<obj_instance>();
+            inst.HideBeacon();
+        }
+        // Cooldown de 30 segundos
+        yield return new WaitForSeconds(beaconCooldown);
+        beaconOnCooldown = false;
     }
 
 }
