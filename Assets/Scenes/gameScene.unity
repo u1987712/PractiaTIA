@@ -12671,6 +12671,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a9ccb24525b73f3448b5f3caada0b317, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3eb4448c7dbe4d746aed58d97d4530ae, type: 2}
     - target: {fileID: 919132149155446097, guid: a9ccb24525b73f3448b5f3caada0b317, type: 3}
       propertyPath: m_Name
       value: floor_foundation_front
@@ -12941,6 +12945,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 9c5ab591bff75f445a1fb6ba07fc2c96, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3eb4448c7dbe4d746aed58d97d4530ae, type: 2}
     - target: {fileID: 919132149155446097, guid: 9c5ab591bff75f445a1fb6ba07fc2c96, type: 3}
       propertyPath: m_Name
       value: floor_tile_large (1)
@@ -21745,6 +21753,10 @@ PrefabInstance:
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 802787822}
+    - target: {fileID: 4323496223234206366, guid: e0be1f2287eef5d4ea5b4fcd2a9d3c30, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 3eb4448c7dbe4d746aed58d97d4530ae, type: 2}
     - target: {fileID: 4827313886326544218, guid: e0be1f2287eef5d4ea5b4fcd2a9d3c30, type: 3}
       propertyPath: m_Name
       value: pilar
