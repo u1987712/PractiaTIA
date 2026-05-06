@@ -13959,11 +13959,11 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 6e57068a052dfea47a48d87630c2c742, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: b83f3b3e2243d9b429a8c2fc8b1c890d, type: 2}
+      objectReference: {fileID: 4835465783239501093, guid: 5b97c4a9bd4c7cd44acb991c2e705f5f, type: 3}
     - target: {fileID: -7511558181221131132, guid: 6e57068a052dfea47a48d87630c2c742, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 4835465783239501093, guid: 9d0f46d85edc7d3419e65129d4884d63, type: 3}
+      objectReference: {fileID: 4835465783239501093, guid: 5b97c4a9bd4c7cd44acb991c2e705f5f, type: 3}
     - target: {fileID: 919132149155446097, guid: 6e57068a052dfea47a48d87630c2c742, type: 3}
       propertyPath: m_Name
       value: Rock_1_J_Color1
