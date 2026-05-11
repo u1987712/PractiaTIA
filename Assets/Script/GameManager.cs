@@ -10,6 +10,15 @@ public class GameManager : MonoBehaviour {
 
     [SerializeField] private XROrigin xrOrigin;
 
+    [Header("Material Effect")]
+    public Material targetMaterial;
+    public string shaderProperty = "_radius";
+    public float maxSliderValue = 200f;
+
+    public Material targetMaterialViñet;
+    public string shaderPropertyViñet = "_VignetteStrength";
+    public float maxSliderValueViñet = 50f;
+
     [Header("UI")]
     public GameObject mainMenu;
     public GameObject bookHUD;
@@ -51,6 +60,9 @@ public class GameManager : MonoBehaviour {
         // Inicio: men� activo, HUD apagado
         mainMenu.SetActive(true);
         bookHUD.SetActive(false);
+        targetMaterial.SetFloat(shaderProperty, 0);
+        targetMaterialViñet.SetFloat(shaderPropertyViñet, 0);
+
     }
 
     public void StartGame() {
@@ -68,6 +80,7 @@ public class GameManager : MonoBehaviour {
         gameRunning = true;
 
         TextNumObj.text = string.Format("{0} de {1}", 0, numObjSpawn + 1);
+
     }
 
     void Update() {
@@ -75,6 +88,21 @@ public class GameManager : MonoBehaviour {
 
         // Actualizar temporizador
         timer -= Time.deltaTime;
+
+        // Normalizamos el tiempo restante
+        float normalized = 1f - (timer / gameDuration);
+
+        // Convertimos a rango 0 -> 200
+        float sliderValue = normalized * maxSliderValue;
+
+        // Aplicamos al material
+        targetMaterial.SetFloat(shaderProperty, sliderValue);
+
+
+        float sliderValueViñet = normalized * maxSliderValueViñet;
+
+        targetMaterialViñet.SetFloat(shaderPropertyViñet, sliderValueViñet);
+
         UpdateTimerOnHUD(timer);
 
         if (timer <= 0f) {
