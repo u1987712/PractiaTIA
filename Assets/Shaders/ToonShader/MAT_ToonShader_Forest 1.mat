@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MAT_ToonShader_Forest 1
-  m_Shader: {fileID: -6465566751694194690, guid: ad3d2e91d614fd749b2ed4d9f2280622, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 1db07c50d81a42e44aa4a918f9429a1d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
