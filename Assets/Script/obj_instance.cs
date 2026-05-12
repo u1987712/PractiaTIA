@@ -1,35 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class obj_instance : MonoBehaviour {
-
-    public int number;       
+public class obj_instance : MonoBehaviour
+{
+    public int number;
     public int passwordIndex;
     public Text textobj;
 
-    [Header("Beacon")]
-    public ParticleSystem beaconPS;
+    [Header("Spectral Reveal Shader")]
+    public Material spectralMat;
 
     private void Awake()
     {
-        if (beaconPS != null)
-            beaconPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (spectralMat != null)
+            spectralMat.SetFloat("_active", 0f);
     }
 
-   public void ShowBeacon()
+    public void ShowBeacon()
     {
         Debug.Log("ShowBeacon: " + gameObject.name);
-        if (beaconPS != null)
-            beaconPS.Play();
-        else
-            Debug.LogWarning("Beacon PS NULL en " + gameObject.name);
-    }
 
+        if (spectralMat != null)
+            spectralMat.SetFloat("_active", 1f);
+        else
+            Debug.LogWarning("Material NULL en " + gameObject.name);
+    }
 
     public void HideBeacon()
     {
-        if (beaconPS != null)
-            beaconPS.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        if (spectralMat != null)
+            spectralMat.SetFloat("_active", 0f);
     }
-   
 }
