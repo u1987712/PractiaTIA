@@ -229,7 +229,8 @@ public class GameManager : MonoBehaviour {
             spawnedObjects.Remove(obj);
             obj_instance co = obj.GetComponent<obj_instance>();
             
-            timer += bonusTime; // sumamos tiempo al temporizador
+            timer = Mathf.Min(timer + bonusTime, gameDuration);
+
             getObjSpawn++;
             TextNumObj.text = string.Format("{0}/{1}", getObjSpawn, numObjSpawn + 1);
             TextPassword.text += string.Format("{0}-[{1}] ", co.number, co.passwordIndex);
